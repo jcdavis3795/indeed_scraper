@@ -2,7 +2,8 @@ from bs4 import BeautifulSoup
 import requests
 import math
 
-
+# the first thing i did here was get the html text of the first page of my indeed search. I found where on the page the total number of jobs was listed, and
+#using that number, found the total number of pages to scrape through. There's probably a better way to do that, but this was my solution
 source = requests.get('https://www.indeed.com/jobs?q=python%20developer&l=Dallas%2C%20TX&radius=50&explvl=entry_level&'
                       'limit=50&start=0').text
 
@@ -12,6 +13,7 @@ page_count = soup.find(id='searchCountPages').text
 
 num_jobs = page_count.split(' ')[23]
 
+# each page displays 50 results. Dividing the number of jobs by 50 and then rounding up gives us the total number of pages to scrape through
 num_pages_int = (int(num_jobs)/50)
 num_pages = math.ceil(num_pages_int)
 
@@ -72,8 +74,6 @@ def get_jobs(web_page_num):
             link.append(job_page_link)
 
             csv_writer.writerow([company[index], title[index], desc[index], link[index]])
-
-            # print(index, ' ', company_name.text, job_title.text, ':', '\n', job_desc.text, '\n', job_page_link)
 
             index += 1
 
